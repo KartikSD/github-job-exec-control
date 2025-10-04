@@ -5,21 +5,21 @@ on:
 
 jobs:
   concurrency-job2:
-    name: creating concurrent job1
-    runs-on: ubuntu-latest
-    concurrency:
-      group: test
-    steps:
-      - name: run concurrent jobs 1
-        run: sleep 15
-        
-  concurrency-job1:
     name: creating concurrent job2
     runs-on: ubuntu-latest
     concurrency:
       group: test
     steps:
       - name: run concurrent jobs 2
+        run: sleep 15
+        
+  concurrency-job1:
+    name: creating concurrent job1
+    runs-on: ubuntu-latest
+    concurrency:
+      group: test
+    steps:
+      - name: run concurrent jobs 1
         run: sleep 15
 
   deploy-job:
