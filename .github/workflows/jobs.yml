@@ -1,0 +1,46 @@
+name: control job execution
+
+on:
+ push:
+
+jobs:
+  concurrency-job2:
+    name: creating concurrent job1
+    runs-on: ubuntu-latest
+    concurrency:
+      group: test
+    steps:
+      - name: run concurrent jobs 1
+        run: sleep 15
+        
+  concurrency-job1:
+    name: creating concurrent job2
+    runs-on: ubuntu-latest
+    concurrency:
+      group: test
+    steps:
+      - name: run concurrent jobs 2
+        run: sleep 15
+
+  deploy-job:
+    name: job for deploying the service
+    runs-on: ubuntu-latest
+    needs: build-job
+    steps:
+      - name: test build output and deploy
+        run: echo ${{ needs.build-job.outputs.build-output }}
+    
+  build-job:
+    outputs:
+      build-output: ${{ steps.buildStep.outputs.buildOutput }}
+    name: a job meant for build
+    runs-on: ubuntu-latest
+    container:
+      image: oven/bun:slim
+    steps:
+      - name: define job output variable
+        id: buildStep
+        run: |
+          bunver=$(bun --version)
+          echo "buildOutput=$bunver" >> "$GITHUB_OUTPUT"
+          
